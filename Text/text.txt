@@ -1,0 +1,26 @@
+REPORT
+{ 
+Introduction
+{
+Programming is a branch of informatics...
+A programm is a sequence of actions...
+}
+Formulation of the problem
+{
+The tasks were assigned to me:
+{
+1.....
+2.....
+3.....
+}
+}
+Conclusion
+{
+I got new knowledge...
+}
+Application
+{
+Application1
+Application2
+}
+}
