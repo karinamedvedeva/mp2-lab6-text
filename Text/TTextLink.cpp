@@ -203,7 +203,64 @@ void TText::GoNext()
 	}
 }
 
-bool TText::IsEmpty()
+bool TText::IsEnd()
 {
 	return st.Empty();
+}
+
+//сборщик мусора 
+void* TTextLink::operator new(size_t n)
+{
+	TTextLink* pC = mem.pFree;
+	if (mem.pFree != NULL)
+		mem.pFree = pC->pNext;
+	return pC;
+}
+
+void TTextLink:: operator delete(void *p) 
+{
+	TTextLink* pC = (TTextLink*)p;
+	pC->pNext = mem.pFree;
+	mem.pFree = pC;
+}
+
+void TTextLink::InitMem(int size) //инициализация памяти
+{
+	int Size = sizeof(TTextLink) * size;
+	mem.pFirst = mem.pFree = (TTextLink*)malloc(Size);
+	mem.pLast = mem.pFirst + (Size - 1);
+	TTextLink* tmp = mem.pFirst;
+	while (tmp != mem.pLast)
+	{
+		tmp->pNext = tmp + 1;
+		tmp->flag = false;
+		tmp = tmp->pNext;
+	}
+	tmp->pNext = NULL;
+	tmp->flag = false;
+	tmp->str[0] = '\0';
+}
+
+void TTextLink::Clean(TText& t) //сборка мусора
+{
+	TTextLink* tmp = mem.pFree;
+	while (tmp != NULL)
+	{
+		tmp->flag = 1;
+		tmp = tmp->pNext;
+	}
+
+	for (t.Reset(); !t.IsEnd(); t.GoNext())
+	{
+		t.pCurr->flag = 1;
+	}
+
+	tmp = mem.pFirst;
+	while (tmp <= mem.pLast)
+	{
+		if (tmp->flag = 1)
+			tmp->flag = false;
+		else
+			delete tmp;
+	}
 }
