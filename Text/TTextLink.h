@@ -1,12 +1,17 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
-#include "TStack.h"
+//#include "TStack.h"
+#include <stack>
 #include <string>
 #include <iostream>
 #include <fstream>
 
+
 using namespace std;
 const int MaxLength = 80;
+
+class TText;
+class TTextLink;
 
 struct TMem
 {
@@ -18,7 +23,7 @@ class TTextLink
 public:
     TTextLink* pNext, * pDown;
     char str[MaxLength];
-	static TMem mem;
+    static TMem mem;
 	bool flag;
 
 	TTextLink(char* s = NULL, TTextLink* pN = NULL, TTextLink* pD = NULL);
@@ -26,19 +31,20 @@ public:
 	//сборщик мусора
 	void* operator new(size_t n);
 	void operator delete(void* p);
-	void InitMem(int size); //инициализация памяти
-	static void PrintFree(); //печать списка свободных звеньев
+	static void InitMem(int size); //инициализация памяти
+	static void PrintFree(TText& t); //печать списка свободных звеньев
 	static void Clean(TText& t); //сборка мусора 
 };
 
 class TText
 {
-	TTextLink* pFirst;
-	Stack<TTextLink*> st;
+	
+	stack<TTextLink*> st;
 	int level;
 public:
+	TTextLink* pFirst;
 	TTextLink* pCurr;
-	TText() {}
+	//TText() {}
 	//навигация
 	void GoFirstLink();
     void GoNextLink();
@@ -68,6 +74,4 @@ public:
 	void Reset();
 	void GoNext();
 	bool IsEnd();
-
-	
 };

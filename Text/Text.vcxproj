@@ -139,7 +139,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="TStack.h" />
     <ClInclude Include="TTextLink.h" />
   </ItemGroup>
   <ItemGroup>

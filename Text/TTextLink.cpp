@@ -4,6 +4,7 @@ TTextLink::TTextLink(char* s, TTextLink* pN, TTextLink* pD)
 {
 	pNext = pN;
 	pDown = pD;
+	flag = true;
 	if (s)
 		strcpy(str, s);
 	else
@@ -13,15 +14,18 @@ TTextLink::TTextLink(char* s, TTextLink* pN, TTextLink* pD)
 //навигация
 void TText::GoFirstLink()
 {
+	while (!st.empty())
+	{
+		st.pop();
+	}
 	pCurr = pFirst;
-	st.Clear();
 }
 
 void TText:: GoNextLink()
 {
 	if (pCurr->pNext != NULL)
 	{
-		st.Push(pCurr);
+		st.push(pCurr);
 		pCurr = pCurr->pNext;
 	}
 }
@@ -30,15 +34,15 @@ void TText::GoDownLink()
 {
 	if (pCurr->pNext != NULL)
 	{
-		st.Push(pCurr);
+		st.push(pCurr);
 		pCurr = pCurr->pDown;
 	}
 }
 
 void TText::GoPrevLink()
 {
-	if (!st.Empty())
-		pCurr = st.Pop();
+	if (!st.empty())
+		pCurr = st.top();
 }
 
 //модификация
@@ -79,7 +83,7 @@ void TText::DelNextLine()
 	{
 		TTextLink* t = pCurr->pNext;
 		pCurr->pNext = t->pNext;
-		delete t;
+		//delete t;
 	}
 }
 
@@ -89,7 +93,7 @@ void TText::DelDownLine()
 	{
 		TTextLink* t = pCurr->pDown;
 		pCurr->pDown = t->pNext;
-		delete t;
+		//delete t;
 	}
 }
 
@@ -181,31 +185,39 @@ void TText::Reset()
 {
 	if (pFirst)
 	{
-		st.Clear();
+		while (!st.empty())
+		{
+			st.pop();
+		}
 		pCurr = pFirst;
-		st.Push(pCurr);
+		//st.push(pCurr);
+		st.push(pFirst);
 		if (pFirst->pNext)
-			st.Push(pFirst->pNext);
+			st.push(pFirst->pNext);
 		if (pFirst->pDown)
-			st.Push(pFirst->pDown);
+			st.push(pFirst->pDown);
 	}
 }
 
 void TText::GoNext()
 {
-	pCurr = st.Pop();
-	if (pCurr != pFirst)
+	if (!st.empty())
 	{
-		if (pCurr->pNext)
-			st.Push(pCurr->pNext);
-		if (pCurr->pDown)
-			st.Push(pCurr->pDown);
+		pCurr = st.top();
+		st.pop();
+		if (pCurr != pFirst)
+		{
+			if (pCurr->pNext)
+				st.push(pCurr->pNext);
+			if (pCurr->pDown)
+				st.push(pCurr->pDown);
+		}
 	}
 }
 
 bool TText::IsEnd()
 {
-	return st.Empty();
+	return st.empty();
 }
 
 //сборщик мусора 
@@ -228,16 +240,16 @@ void TTextLink::InitMem(int size) //инициализация памяти
 {
 	int Size = sizeof(TTextLink) * size;
 	mem.pFirst = mem.pFree = (TTextLink*)malloc(Size);
-	mem.pLast = mem.pFirst + (Size - 1);
+	mem.pLast = mem.pFirst + (size - 1);
 	TTextLink* tmp = mem.pFirst;
 	while (tmp != mem.pLast)
 	{
 		tmp->pNext = tmp + 1;
-		tmp->flag = false;
+		tmp->flag = true;
 		tmp = tmp->pNext;
 	}
 	tmp->pNext = NULL;
-	tmp->flag = false;
+	tmp->flag = true;
 	tmp->str[0] = '\0';
 }
 
@@ -262,5 +274,22 @@ void TTextLink::Clean(TText& t) //сборка мусора
 			tmp->flag = false;
 		else
 			delete tmp;
+	}
+}
+
+void TTextLink::PrintFree(TText& t)
+{
+	TTextLink* tmp = mem.pFree;
+	while (tmp->pNext)
+	{
+		if (tmp->str[0] != '\0')
+		{
+			cout << tmp->str << endl;
+		}
+		else
+		{
+			cout << "There are no loosen links" << endl;
+		}
+		tmp = tmp->pNext;
 	}
 }
