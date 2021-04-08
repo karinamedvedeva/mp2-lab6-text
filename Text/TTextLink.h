@@ -1,6 +1,5 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
-//#include "TStack.h"
 #include <stack>
 #include <string>
 #include <iostream>
@@ -32,7 +31,7 @@ public:
 	void* operator new(size_t n);
 	void operator delete(void* p);
 	static void InitMem(int size); //инициализация памяти
-	static void PrintFree(TText& t); //печать списка свободных звеньев
+	static void PrintFree(); //печать списка свободных звеньев
 	static void Clean(TText& t); //сборка мусора 
 };
 

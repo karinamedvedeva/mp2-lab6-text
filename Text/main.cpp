@@ -21,7 +21,7 @@ void main()
 	char fn[] = "C:\\Users\\karina\\OneDrive\\Документы\\Projects\\mp2-lab6-text\\Text\\text.txt";
 	do
 	{
-		cout << "НАВИГАЦИЯ ПО ТЕКСТУ" << endl << "1. Считать из файла текст и вывести его на экран" << endl << "2. Перейти к первой строке" << endl << "3. Перейти к следующей строке по pNext " << endl << "4. Перейти к следующей строке по pDown " << endl << "5. Перейти к предыдущей позиции" << endl;
+		cout << endl<< "НАВИГАЦИЯ ПО ТЕКСТУ" << endl << "1. Считать из файла текст и вывести его на экран" << endl << "2. Перейти к первой строке" << endl << "3. Перейти к следующей строке по pNext " << endl << "4. Перейти к следующей строке по pDown " << endl << "5. Перейти к предыдущей позиции" << endl;
 		cout << endl << "МОДИФИКАЦИЯ ТЕКСТА" << endl << "6. Добавить новую строку на том же уровне " << endl << "7. Добавить новый раздел на том же уровне" << endl << "8. Добавить строку в подуровень" << endl << "9. Добавить новый раздел в подуровень" << endl << "10. Удалить строку на том же уровне" << endl << "11. Удалить строку в подуровне" << endl;
 		cout << endl << "СБОРЩИК МУСОРА" << endl << "12. Сборка мусора" << endl << "13. Печать списка свободных звеньев" << endl;
 
@@ -99,7 +99,7 @@ void main()
 			t.Read(fn);
 			t.Print();
 			char stroka[80];
-			cout << "Введите строку, после которой хотите новую строку: ";
+			cout << "Введите строку, после которой хотите добавить новую: ";
 			cin >> stroka;
 			cout << "Введите текст для добавления: ";
 			cin >> s;
@@ -224,23 +224,9 @@ void main()
 			TTextLink :: Clean(t);
 			break;
 		case 13:
-			t.Read(fn);
-			t.Print();
-			char str[] = "REPORT";
-			for (t.Reset(); !t.IsEnd(); t.GoNext())
-			{
-				if (!strcmp(t.pCurr->str, str))
-				{
-					t.DelDownLine();
-					break;
-				}
-			}
-			t.Print();
-			cout << endl << "Loose links : " << endl;
-			TTextLink::PrintFree(t);
-			TTextLink::Clean(t);
-			cout  << "The result : " << endl;
-			TTextLink::PrintFree(t);
+			cout << endl << "Free list : " << endl;
+			TTextLink::PrintFree();
+			cout << endl;
 			break;
 		}
 	} while (k != 0);

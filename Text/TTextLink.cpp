@@ -23,7 +23,7 @@ void TText::GoFirstLink()
 
 void TText:: GoNextLink()
 {
-	if (pCurr->pNext != NULL)
+	if (pCurr->pNext !=NULL)
 	{
 		st.push(pCurr);
 		pCurr = pCurr->pNext;
@@ -83,7 +83,7 @@ void TText::DelNextLine()
 	{
 		TTextLink* t = pCurr->pNext;
 		pCurr->pNext = t->pNext;
-		//delete t;
+		delete t;
 	}
 }
 
@@ -93,7 +93,7 @@ void TText::DelDownLine()
 	{
 		TTextLink* t = pCurr->pDown;
 		pCurr->pDown = t->pNext;
-		//delete t;
+		delete t;
 	}
 }
 
@@ -246,6 +246,7 @@ void TTextLink::InitMem(int size) //инициализация памяти
 	{
 		tmp->pNext = tmp + 1;
 		tmp->flag = true;
+		tmp->str[0] = '\0';
 		tmp = tmp->pNext;
 	}
 	tmp->pNext = NULL;
@@ -256,28 +257,33 @@ void TTextLink::InitMem(int size) //инициализация памяти
 void TTextLink::Clean(TText& t) //сборка мусора
 {
 	TTextLink* tmp = mem.pFree;
-	while (tmp != NULL)
+	while (tmp != mem.pLast)
 	{
-		tmp->flag = 1;
+		tmp->flag = false;
 		tmp = tmp->pNext;
 	}
-
+	tmp->flag = false;
 	for (t.Reset(); !t.IsEnd(); t.GoNext())
 	{
-		t.pCurr->flag = 1;
+		t.pCurr->flag = false;
 	}
+    tmp = mem.pFirst;
 
-	tmp = mem.pFirst;
-	while (tmp <= mem.pLast)
+	while (tmp != mem.pLast)
 	{
-		if (tmp->flag = 1)
-			tmp->flag = false;
+		if (tmp->flag == false)
+			tmp->flag = true;
 		else
 			delete tmp;
+		tmp = tmp + 1;
 	}
+	if (tmp->flag ==false)
+		tmp->flag = true;
+	else
+		delete tmp;
 }
-
-void TTextLink::PrintFree(TText& t)
+ 
+void TTextLink::PrintFree() //печать списка свободных звеньев
 {
 	TTextLink* tmp = mem.pFree;
 	while (tmp->pNext)
@@ -286,10 +292,10 @@ void TTextLink::PrintFree(TText& t)
 		{
 			cout << tmp->str << endl;
 		}
-		else
-		{
-			cout << "There are no loosen links" << endl;
-		}
 		tmp = tmp->pNext;
+	}
+	if (tmp->str[0] != '\0')
+	{
+		cout << tmp->str << endl;
 	}
 }
